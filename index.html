@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>App Product</title>
+  </head>
+  <body>
+    <h1>App Product</h1>
+    <button id="fetchButton">Fetch Products</button>
+    <div id="result"></div>
+    <script>
+      const fetchButton = document.getElementById("fetchButton");
+      const resultDiv = document.getElementById("result");
+      fetchButton.addEventListener("click", () => {
+        resultDiv.innerHTML = "";
+        fetch("http://192.168.1.3/api/getProducts/")
+          .then((response) => {
+            return response.json();
+          })
+          .then((data) => {
+            const ul = document.createElement("ul");
+            data.data.forEach((item) => {
+              const li = document.createElement("li");
+              li.textContent = `${item.code} - ${item.product}`;
+              ul.appendChild(li);
+            });
+            resultDiv.appendChild(ul);
+          })
+          .catch((error) => {
+            resultDiv.innerHTML = `<strong>Error:</strong> ${error.message}`;
+          });
+      });
+    </script>
+  </body>
+</html>
