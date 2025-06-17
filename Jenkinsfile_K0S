@@ -1,0 +1,72 @@
+pipeline {
+    agent any
+    environment {
+
+        GITHUB_REPO_URL = 'https://github.com/lapisanlangit/feproduct.git'
+        REGISTRY_URL = '10.100.44.184:6300'
+        DOCKER_IMAGE_NAME = '10.100.44.184:6300/feproduct'
+        CONTAINER_NAME='feproduct'
+        DOCKER_IMAGE_TAG = '3.0'
+        DOCKER_LOGIN='dockerlogin'
+        DESTINATION_HOST = 'jati@10.100.44.184'
+        
+    }
+
+    stages {
+        stage('Clone Repository Github') {
+            steps {
+                git branch: 'main', 
+                url: 'https://github.com/lapisanlangit/feproduct.git', 
+                credentialsId: 'githublogin'
+            }
+        }
+
+        stage('Build Image FE') {
+            steps {
+                echo 'Building Image FE...'
+                script {
+                   sh '''
+                    docker build . -t ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}
+                '''
+                }
+            }
+        }
+
+
+        stage('Docker Push to Local Registry') {
+            steps {
+                echo 'Docker Push...'
+                script {
+                    docker.withRegistry("https://${REGISTRY_URL}", 'dockerlogin') {
+                        def customImage = docker.image("${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}")
+                        customImage.push()
+                    }
+                }
+            }
+        }
+
+
+        stage('Deployment FE Product') {
+            steps {
+                script {      
+                            sh '''
+                               ssh ${DESTINATION_HOST} << EOF
+                               cd productdeployment
+                               sudo k0s kubectl apply -f feproduct-deployment.yaml
+                              << EOF
+                            '''
+                         
+                }
+            }
+        }       
+    }
+
+    post {
+        success {
+            echo 'Pipeline completed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed.'
+        }
+    }
+}

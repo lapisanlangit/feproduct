@@ -2,12 +2,12 @@ pipeline {
     agent any
     environment {
         GITHUB_REPO_URL = 'https://github.com/lapisanlangit/feproduct.git'
-        REGISTRY_URL = '192.168.1.8:6300'
-        DOCKER_IMAGE_NAME = '192.168.1.8:6300/feproduct'
+        REGISTRY_URL = '192.168.1.10:6300'
+        DOCKER_IMAGE_NAME = '192.168.1.10:6300/feproduct_jenkins'
         CONTAINER_NAME='feproduct'
         DOCKER_IMAGE_TAG = '1.0'
         DOCKER_LOGIN='dockerlogin'
-        DESTINATION_HOST = 'shayla@192.168.1.9'
+        DESTINATION_HOST = 'jati@192.168.1.10'
     }
 
     stages {
@@ -73,7 +73,20 @@ pipeline {
                          
                 }
             }
-        }       
+        }
+
+
+        stage('Rolling Update FE Product') {
+            steps {
+                script {      
+                            sh '''
+                               ssh ${DESTINATION_HOST} << EOF
+         docker service update --image ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG} --update-parallelism 2  --update-delay 10s svc-feproduct
+                              << EOF
+                            ''' 
+                }
+            }
+        }    
     }
 
     post {
