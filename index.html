@@ -14,7 +14,7 @@
       const resultDiv = document.getElementById("result");
       fetchButton.addEventListener("click", () => {
         resultDiv.innerHTML = "";
-        fetch("http://10-100-44-184.nip.io/api/getProducts/")
+        fetch("http://192.168.1.10/api/getProducts/")
           .then((response) => {
             return response.json();
           })
