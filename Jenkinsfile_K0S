@@ -3,12 +3,12 @@ pipeline {
     environment {
 
         GITHUB_REPO_URL = 'https://github.com/lapisanlangit/feproduct.git'
-        REGISTRY_URL = '10.100.44.184:6300'
-        DOCKER_IMAGE_NAME = '10.100.44.184:6300/feproduct'
+        REGISTRY_URL = '192.168.1.X:6300'
+        DOCKER_IMAGE_NAME = ''192.168.1.X::6300/feproduct'
         CONTAINER_NAME='feproduct'
-        DOCKER_IMAGE_TAG = '3.0'
+        DOCKER_IMAGE_TAG = '1.0'
         DOCKER_LOGIN='dockerlogin'
-        DESTINATION_HOST = 'jati@10.100.44.184'
+        DESTINATION_HOST = 'jati@192.168.1.X'
         
     }
 
