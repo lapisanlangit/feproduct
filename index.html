@@ -7,14 +7,14 @@
   </head>
   <body>
     <h1>App Product</h1>
-    <button id="fetchButton">Fetch Product</button>
+    <button id="fetchButton">Fetch Product Test</button>
     <div id="result"></div>
     <script>
       const fetchButton = document.getElementById("fetchButton");
       const resultDiv = document.getElementById("result");
       fetchButton.addEventListener("click", () => {
         resultDiv.innerHTML = "";
-        fetch("http://192.168.1.10/api/getProducts/")
+        fetch("http://10-100-244-174.nip.io/api/getProducts/")
           .then((response) => {
             return response.json();
           })
